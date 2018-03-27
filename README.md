@@ -125,6 +125,14 @@ PHP和MySQL是好朋友。
 
 而其他的配置，只要不涉密，就放在 config.ini 中。
 
+### ORM 访问数据库
+
+当你在 .env 中配置好数据库的路径用户名密码之后，就可以使用如下方式访问数据库：
+
+    $v = ORM::for_table('user')->find_one();
+
+更多的访问方式请看 [Idiorm’s documentation](http://idiorm.readthedocs.io/en/latest/)
+
 ### 简要使用介绍
 
 **开发**
