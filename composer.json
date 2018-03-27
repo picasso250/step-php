@@ -1,0 +1,7 @@
+{
+    "require": {
+        "bephp/router": "^1.1",
+        "j4mie/idiorm": "^1.5",
+        "vlucas/phpdotenv": "^2.4"
+    }
+}
