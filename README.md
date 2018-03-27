@@ -138,7 +138,8 @@ PHP和MySQL是好朋友。
 **开发**
 
 1. 将 .env.sample 改名成 .env
-2. 在项目根目录下运行 php -S 0.0.0.0:8080 -t public
+2. 在项目根目录下运行 `composer install`
+2. 在项目根目录下运行 `php -S 0.0.0.0:8080 -t public` 开启开发服务器
 3. 访问 [http://localhost:8080](http://localhost:8080)
 
 **部署**
