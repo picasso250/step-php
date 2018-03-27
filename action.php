@@ -9,7 +9,7 @@ function action_hello($name)
 }
 function action_html_file()
 {
-    include ROOT.'/view/a.html';
+    include ROOT.'/view/a.php';
 }
 function action_db()
 {
