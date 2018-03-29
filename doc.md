@@ -134,6 +134,196 @@
 
 现在访问一下 [http://localhost:8080](http://localhost:8080) 就可以看见列表页面了。
 
+## 数据验证
+
+当用户未按照我们的意愿填写表单时，我们要给予他们反馈。
+
+下面是 action.php 中的 action_blog_new() 函数，我们将之修改为支持报错的版本。
+
+    function action_blog_new()
+    {
+        $errors = [];
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $title = _post('title', '');
+            if ($title === '') $errors[] = "标题不能为空";
+            $content = _post('content', '');
+            if ($content === '') $errors[] = "内容不能为空";
+            if (!$errors) {
+                $b = ORM::for_table("blog")->create();
+                $b->title = $title;
+                $b->content = $content;
+                $b->save();
+                header("Location:/blog/$b->id");
+                return;
+            }
+        }
+        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_new.php'], compact('errors'));
+    }
+
+对应的，blog_new.php 也需要修改
+
+    <h1>新建博客</h1>
+
+    <form action="?" method="POST" >
+        <?php if ($errors): ?>
+            <div id="error_explanation">
+            <h2>
+                有 <?= count($errors) ?> 个错误
+            </h2>
+            <ul>
+                <?php foreach($errors as $err): ?>
+                <li><?= htmlspecialchars($err) ?></li>
+                <?php endforeach ?>
+            </ul>
+            </div>
+        <?php endif ?>
+        <p>
+            标题<br>
+            <input type="text" name="title" value="<?= htmlentities(_post('title', '')) ?>">
+        </p>
+        <p>
+            内容<br>
+            <textarea name="content" cols="30" rows="10"><?= htmlentities(_post('content', '')) ?></textarea>
+        </p>
+        <input type="submit" value="保存博客">
+    </form>
+
+### 编辑博客
+
+接下来我们处理编辑。首先在action.php中新增函数
+
+    function action_blog_edit($id)
+    {
+        $errors = [];
+        $blog = ORM::for_table('blog')->find_one($id);
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $blog->title = _post('title', '');
+            if ($blog->title === '') $errors[] = "标题不能为空";
+            $blog->content = _post('content', '');
+            if ($blog->content === '') $errors[] = "内容不能为空";
+            if (!$errors) {
+                $blog->save();
+                header("Location:/blog/$blog->id");
+                return;
+            }
+        }
+        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_edit.php'], compact('errors', 'blog'));
+    }
+
+然后在 view中新增 blog_edit.php
+
+    <h1>新建博客</h1>
+
+    <form action="?" method="POST" >
+        <?php if ($errors): ?>
+            <div id="error_explanation">
+            <h2>
+                有 <?= count($errors) ?> 个错误
+            </h2>
+            <ul>
+                <?php foreach($errors as $err): ?>
+                <li><?= htmlspecialchars($err) ?></li>
+                <?php endforeach ?>
+            </ul>
+            </div>
+        <?php endif ?>
+        <p>
+            标题<br>
+            <input type="text" name="title" value="<?= htmlentities($blog->title) ?>">
+        </p>
+        <p>
+            内容<br>
+            <textarea name="content" cols="30" rows="10"><?= htmlentities($blog->content) ?></textarea>
+        </p>
+        <input type="submit" value="保存博客">
+    </form>
+
+### DRY
+
+有一个原则，是不要重复你自己。我们可以发现，我们在创建和编辑的时候，有很多代码都是重复的。接下来我们致力于消除这些代码。
+
+action.php中的代码可以变为：
+
+    function blog_check($blog, &$errors)
+    {
+        $blog->title = _post('title', '');
+        if ($blog->title === '') $errors[] = "标题不能为空";
+        $blog->content = _post('content', '');
+        if ($blog->content === '') $errors[] = "内容不能为空";
+    }
+
+    function action_blog_new()
+    {
+        $errors = [];
+        $blog = ORM::for_table("blog")->create();
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            blog_check($blog, $errors);
+            if (!$errors) {
+                $blog->save();
+                header("Location:/blog/$blog->id");
+                return;
+            }
+        }
+        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_new.php'], compact('errors', 'blog'));
+    }
+
+    function action_blog_edit($id)
+    {
+        $errors = [];
+        $blog = ORM::for_table('blog')->find_one($id);
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            blog_check($blog, $errors);
+            if (!$errors) {
+                $blog->save();
+                header("Location:/blog/$blog->id");
+                return;
+            }
+        }
+        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_edit.php'], compact('errors', 'blog'));
+    }
+
+而view也可以从2个文件变成三个文件。我们将公共部分提取成 blog_form.php
+
+blog_form.php
+
+    <form action="?" method="POST" >
+        <?php if ($errors): ?>
+            <div id="error_explanation">
+            <h2>
+                有 <?= count($errors) ?> 个错误
+            </h2>
+            <ul>
+                <?php foreach($errors as $err): ?>
+                <li><?= htmlspecialchars($err) ?></li>
+                <?php endforeach ?>
+            </ul>
+            </div>
+        <?php endif ?>
+        <p>
+            标题<br>
+            <input type="text" name="title" value="<?= htmlentities($blog->title) ?>">
+        </p>
+        <p>
+            内容<br>
+            <textarea name="content" cols="30" rows="10"><?= htmlentities($blog->content) ?></textarea>
+        </p>
+        <input type="submit" value="保存博客">
+    </form>
+
+blog_new.php
+
+    <h1>新建博客</h1>
+
+    <?php include __DIR__.'/blog_form.php' ?>
+
+blog_edit.php
+
+    <h1>新建博客</h1>
+
+    <?php include __DIR__.'/blog_form.php' ?>
+
+好了，我们的博客小网站就开发完毕了。你可以自己加入新欢的功能。
+
 ## 三个重要概念
 
 ### 伪静态
