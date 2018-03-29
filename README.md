@@ -64,19 +64,26 @@ PHP和MySQL是好朋友。
 2. 方便进一步封装；
 3. 方便异构数据库转换。
 
-## 如何使用框架
+## 简要使用指南
 
-首先，将框架下载下来，主文件夹改成自己想要的名字。
+**开发**
 
-然后来看看文件夹的结构。
+1. 下载源码。
+1. 将 .env.sample 改名成 .env
+2. 在项目根目录下运行 `composer install`
+2. 在项目根目录下运行 `php -S 0.0.0.0:8080 -t public` 开启开发服务器
+3. 访问 [http://localhost:8080](http://localhost:8080)
 
-    public
+## 框架原理
+
+首先，来看看文件夹的结构。
+
+    public/
      |--index.php  # 入口文件
-    view           # html(视图)文件夹
-     |--a.php
+    view/           # html(视图)文件夹
     action.php     # 行为函数
     config.ini     # 配置文件
-    .env           # 环境相关的配置文件
+    .env           # 环境相关的配置
     composer.json
     composer.lock  # 两个composer的配置文件
 
@@ -139,16 +146,7 @@ PHP和MySQL是好朋友。
 
 更多的访问方式请看 [Idiorm’s documentation](http://idiorm.readthedocs.io/en/latest/)
 
-### 简要使用介绍
-
-**开发**
-
-1. 将 .env.sample 改名成 .env
-2. 在项目根目录下运行 `composer install`
-2. 在项目根目录下运行 `php -S 0.0.0.0:8080 -t public` 开启开发服务器
-3. 访问 [http://localhost:8080](http://localhost:8080)
-
-**部署**
+### 部署
 
 如果你使用的是 apache, 将root指向public目录，其中的 .htaccess 文件已经准备好了。
 
