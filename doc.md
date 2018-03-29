@@ -1,5 +1,178 @@
 # Step-PHP 文档
 
+## 一个例子网站
+
+接下来，我们将用15分钟做一个博客网站
+
+### 网址设计
+
+我们将让首页作为博客的列表页面。然后还需要有新增、编辑和管理页面。
+
+于是我们的路由如下
+
+    ->get('/', 'action_index')
+    ->get('/admin', 'action_blog_admin')
+    ->get('/blog/:id', 'action_blog_view')
+    ->match(['GET','POST'], '/blog/:id/edit', 'action_blog_edit')
+    ->match(['GET','POST'], '/admin/blog/create', 'action_blog_create')
+
+### 新建博客
+
+首先在 view 文件夹中新建 blog_new.php
+
+这将是新增博客的界面。内容如下：
+
+    <h1>新建博客</h1>
+
+    <form action="?" method="POST" >
+        <p>
+            标题<br>
+            <input type="text" name="title">
+        </p>
+        <p>
+            内容<br>
+            <textarea name="content" id="content_textarea" cols="30" rows="10"></textarea>
+        </p>
+        <input type="submit" value="保存博客">
+    </form>
+
+接下来，我们在 action.php 中实现此界面的函数。
+
+    function action_blog_new()
+    {
+        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_new.php']);
+    }
+
+现在访问一下 [http://localhost:8080/admin/blog/new](http://localhost:8080/admin/blog/new) 就可以看见新建页面了。
+
+### 数据库设计
+
+在继续之前，我们需要将数据库做好。
+
+在数据库中运行以下建表语句。
+
+    CREATE TABLE `blog` (
+        `id` INT(11) NOT NULL AUTO_INCREMENT,
+        `title` VARCHAR(150) NOT NULL,
+        `content` TEXT NOT NULL,
+        PRIMARY KEY (`id`)
+    )
+    ENGINE=InnoDB
+    ;
+
+### 保存数据
+
+    function action_blog_new()
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $b = ORM::for_table("blog")->create();
+            $b->title = $_POST['title'];
+            $b->content = $_POST['content'];
+            $b->save();
+            header("Location:/blog/$b->id");
+            return;
+        }
+        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_new.php']);
+    }
+
+这样我们就完成了保存操作的代码。在保存之后，我们重定向到blog的查看页面。因为我们还没写页面，这时应该是报了一个错。
+
+你可以到数据库中观察是否正确生成了数据。
+
+### 查看
+
+一样的套路。我们首先在 action.php 中添加行为函数。
+
+    function action_blog_view($id)
+    {
+        $blog = ORM::for_table('blog')->find_one($id);
+        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_view.php'], compact('blog'));
+    }
+
+然后在 view 里新增视图文件 blog_view.php
+
+    <p>
+    <strong>标题:</strong>
+    <?= htmlspecialchars($blog->title); ?>
+    </p>
+    
+    <p>
+    <strong>内容:</strong>
+    <?= htmlspecialchars($blog->content); ?>
+    </p>
+
+这样，刷新浏览器就可以看到了。
+
+### 列表页面
+
+我们在 action.php 中修改函数
+
+    function action_index()
+    {
+        $blog_list = ORM::for_table('blog')->find_many();
+        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_list.php'], compact('blog_list'));
+    }
+
+然后在view 中添加 blog_list.php 文件
+
+    <h1>博客列表</h1>
+    
+    <table>
+    <tr>
+        <th>标题</th>
+        <th>内容</th>
+    </tr>
+    
+    <?php foreach ($blog_list as $blog): ?>
+        <tr>
+        <td><?= htmlspecialchars($blog->title) ?></td>
+        <td><?= htmlspecialchars($blog->content) ?></td>
+        <td><a href="/blog/<?= $blog->id ?>">链接</a></td>
+        </tr>
+    <?php endforeach ?>
+    </table>
+
+现在访问一下 [http://localhost:8080](http://localhost:8080) 就可以看见列表页面了。
+
+## 三个重要概念
+
+### 伪静态
+
+我们比较如下的两个URL
+
+    /index.php?s=do_somthing&id=1
+    /do_something/1
+
+我们会发现第二个URL显得比较“专业”。在很久很久以前，只有纯html静态页面才具有这种URL。后来，人们通过PHP也可以实现这种URL，于是就称之为“伪静态”。
+
+至于如何实现，我们接下来再讲。
+
+### composer
+
+假设你想实现一个功能，比如伪静态。你可以自己研究如何实现，也可以到网上copy代码。当然，懒惰的人（懒惰是程序员的美德）肯定选择后者。
+
+但俗话说的好：“人一定会犯错，机器不会”。那么，能不能让机器做copy代码这件事情，把copy代码这件事情做的好，做的妙呢？
+
+能，答案就是[composer](https://getcomposer.org/)。
+
+但是身在中国，有的时候你会发现composer的安装比较慢（很慢很慢）。那么此时你需要翻墙。
+
+翻墙是程序员的必备技能。是的，我们是技术人员，我们不惧艰险，我们渴望知识，而知识就是力量。
+
+翻墙之后，在命令行下使用代理的步骤参见[这里](http://picasso250.github.io/2015/04/03/agent.html)
+
+### ORM
+
+PHP和MySQL是好朋友。
+
+在如何操作MySQL这件事情上，有很深的学问。有一个模式叫做 ORM，它本是为Java这种OO的强类型语言提供数据转换的。在PHP中，它是封装了的一种访问数据库的方法。
+
+为什么要使用ORM呢？有三个原因：方便，方便，方便。
+
+1. 方便参数化，防止注入；
+2. 方便进一步封装；
+3. 方便异构数据库转换。
+
 ## 框架原理
 
 首先，来看看文件夹的结构。
@@ -8,6 +181,7 @@
      |--index.php  # 入口文件
     view/           # html(视图)文件夹
     action.php     # 行为函数
+    lib.php        # 库函数
     config.ini     # 配置文件
     .env           # 环境相关的配置
     composer.json
@@ -34,7 +208,7 @@
 
 所以，你需要说明用户访问的某个URL会引起什么函数的执行。在 `public/index.php` 中配置好，然后在 `action.php` 中实现这个函数。
 
-更详细的请看[PHP Router class 的文档](https://github.com/dannyvankooten/PHP-Router)。
+更详细的请看[router 的文档](https://github.com/bephp/router/blob/master/README.zh-CN.md)。
 
 ### 视图文件夹
 
