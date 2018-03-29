@@ -2,17 +2,13 @@
 
 function action_index()
 {
-    echo "A Step Away From PHP.";
+    $debugbar = $GLOBALS['debugbar'];
+    $debugbar["messages"]->addMessage("hello world!");
+    include ROOT_VIEW.'/welcome.php';
 }
 function action_hello($name)
 {
     echo "hello, $name";
-}
-function action_html_file()
-{
-    $debugbar = $GLOBALS['debugbar'];
-    $debugbar["messages"]->addMessage("hello world!");
-    include ROOT_VIEW.'/a.php';
 }
 function action_db()
 {

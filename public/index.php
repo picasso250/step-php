@@ -40,7 +40,6 @@ $router = new Router();
 $router
 ->get('/', 'action_index')
 ->get('/hello/:name', 'action_hello')
-->get('/v', 'action_html_file')
 ->get('/db', 'action_db')
 ->get('/error/example', 'action_error_example')
 ->get('/full', 'action_full')
