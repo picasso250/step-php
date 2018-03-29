@@ -10,7 +10,6 @@
     <title>A example of Step-PHP</title>
 
     <meta name="author" content="xiaochi">
-    <link rel="shortcut icon" type="image/ico" href="uri" />
 
     <meta name="HandheldFriendly" content="true">
     <meta name="apple-mobile-web-app-title" content="Step-PHP">
