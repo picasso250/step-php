@@ -13,6 +13,8 @@
     <td>
         <?php if ($field['type'][0] == '['): ?>
         <a href="#_id_type_<?= substr($field['type'], 1, strlen($field['type'])-2) ?>"><?= $field['type'] ?></a>
+        <?php elseif (ctype_upper($field['type'][0])): ?>
+        <a href="#_id_type_<?= ($field['type']) ?>"><?= $field['type'] ?></a>
         <?php else: echo $field['type']; endif ?></td>
     <td><?= $field['description'] ?></td>
     </tr>
