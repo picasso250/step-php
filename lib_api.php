@@ -78,7 +78,7 @@ function _api_parse_method($resource, $method)
     $config = _api_get_conf_by_key($key);
     $ret = [];
     $ret['name'] = _api_get_conf_by_key($key, 'name');
-    $ret['uri'] = '/api.php?'.http_build_query(['resource'=>$resource, 'method'=>$method]);
+    $ret['uri'] = '?'.http_build_query(['resource'=>$resource, 'method'=>$method]);
     $input = _api_get_config_by_key_default([$key, 'input']);
     $ret['input'] = _api_get_input_output($input, $key, $resource);$input ? explode(',', $input) : [];
     $output = _api_get_config_by_key_default([$key, 'output']);
