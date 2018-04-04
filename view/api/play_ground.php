@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>A example of Step-PHP</title>
+    <title>API文档+PlayGround</title>
 
     <meta name="author" content="xiaochi">
 
@@ -30,12 +30,19 @@
     <h1>API文档+PlayGround</h1>
 
     <h2>公共参数</h2>
-    <dl class="">
-        <dt>_login_user_id</dt>
+    <?php if ($field_table['core']): ?>
+    <dl class="public_params">
+    <?php foreach($field_table['core'] as $field_name => $a): ?>
+        <dt><?= $field_name ?> (<?= $a['type'] ?>)</dt>
         <dd>
-            <input type="text" name="l" id="_login_user_id" value="5694">
+            <input type="text" name="l" id="<?= $field_name ?>" value="">
+            <span><?= htmlspecialchars($a['description']) ?></span>
         </dd>
+    <?php endforeach ?>
     </dl>
+    <?php else: ?>
+    无
+    <?php endif ?>
 
     <hr>
 
@@ -48,7 +55,7 @@
         <?php endforeach ?>
     <?php endforeach ?>
 
-    <h2>类型</h2>
+    <h2>类型详解</h2>
 
     <?php foreach ($field_table as $big_type => $value): //print_r($value); ?>
         <?php if($value): ?><h3 id="_id_type_<?= $big_type ?>"><?= $big_type ?></h3><?php endif ?>
