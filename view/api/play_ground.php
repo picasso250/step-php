@@ -27,7 +27,22 @@
 
 <body>
 
-    <h1>API文档+PlayGround</h1>
+    <h1><?= htmlspecialchars($GLOBALS['config_api']['core']['name']) ?> API文档+PlayGround</h1>
+
+    <dl class="public_params">
+        <dt>名称</dt>
+        <dd>
+            <?= htmlspecialchars($GLOBALS['config_api']['core']['name']) ?>
+        </dd>
+        <dt>版本</dt>
+        <dd>
+            <?= htmlspecialchars($GLOBALS['config_api']['core']['version']) ?>
+        </dd>
+        <dt>URI</dt>
+        <dd>
+            <?= htmlspecialchars($GLOBALS['config_api']['core']['uri']) ?>
+        </dd>
+    </dl>
 
     <h2>公共参数</h2>
     <?php if ($field_table['core']): ?>
