@@ -85,7 +85,10 @@
             </div>
         </div>
 
-        <?php if ($_ENV['DEBUG']) echo $GLOBALS['debugbarRenderer']->render() ?>
+        <?php if ($_ENV['DEBUG']) {
+            $debugbar["messages"]->addMessage("time: ".intval(1000*(microtime(true)-BEGIN_TIME))."ms");
+            echo $GLOBALS['debugbarRenderer']->render();
+        } ?>
         
     </body>
 </html>
