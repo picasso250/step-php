@@ -1,7 +1,5 @@
 <?php
 
-define('BEGIN_TIME', microtime(true));
-
 define('ROOT', dirname(__DIR__));
 define('ROOT_VIEW', ROOT.'/view');
 
