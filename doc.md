@@ -14,7 +14,7 @@
     ->get('/admin', 'action_blog_admin')
     ->get('/blog/:id', 'action_blog_view')
     ->match(['GET','POST'], '/blog/:id/edit', 'action_blog_edit')
-    ->match(['GET','POST'], '/admin/blog/create', 'action_blog_create')
+    ->match(['GET','POST'], '/admin/blog/new', 'action_blog_new')
 
 ### 新建博客
 
