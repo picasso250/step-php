@@ -26,6 +26,10 @@ PHP开发框架。中文名：一步之遥。距离原生PHP和Laravel都是一�
 
 为什么要引入这三个概念呢？因为这三个概念非常重要，事关现代化，效率和安全。你可以先去搜索引擎上学习一下这三个概念。
 
+router使用的组件是：[bephp/router](https://github.com/bephp/router/blob/master/README.zh-CN.md)
+
+ORM 使用的组件是 [Idiorm](http://idiorm.readthedocs.io/en/latest/)
+
 除了以上三个概念，
 Step-PHP也引入了其他一些确实可以提高开发效率的组件（phpdotenv,debugbar,whoops），但就不在这里介绍了。
 
