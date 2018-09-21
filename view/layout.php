@@ -14,13 +14,10 @@
     <meta name="HandheldFriendly" content="true">
     <meta name="apple-mobile-web-app-title" content="Step-PHP">
 
-    <?php if ($_ENV['DEBUG']) echo $GLOBALS['debugbarRenderer']->renderHead() ?>
-
 </head>
 
 <body>
     <?php include $_inner_tpl_list['content'] ?>
-    <?php if ($_ENV['DEBUG']) echo $GLOBALS['debugbarRenderer']->render() ?>
 </body>
 
 </html>

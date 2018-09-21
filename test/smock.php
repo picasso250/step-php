@@ -15,7 +15,7 @@ if ($info['http_code'] != 200) {
     throw new Exception("http code should be 200, $info[http_code] found", $info['code']);
 }
 
-// 首页
+// 参数
 list($ch, $ret) = http_get_must("/hello/xc");
 $info = curl_getinfo($ch);
 if ($info['http_code'] != 200) {
@@ -23,6 +23,13 @@ if ($info['http_code'] != 200) {
 }
 if (!preg_match('/xc$/', $ret)) {
     throw new Exception("name should be xc");
+}
+
+// 错误页面
+list($ch, $ret) = http_get_must("/error/example");
+$info = curl_getinfo($ch);
+if ($info['http_code'] != 500) {
+    throw new Exception("http code should be 500, $info[http_code] found", $info['code']);
 }
 
 // ==== ALL OK =====

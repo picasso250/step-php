@@ -65,8 +65,6 @@
             }
         </style>
 
-        <?php if ($_ENV['DEBUG']) echo $GLOBALS['debugbarRenderer']->renderHead() ?>
-
     </head>
     <body>
         <div class="flex-center position-ref full-height">
@@ -85,7 +83,5 @@
             </div>
         </div>
 
-        <?php if ($_ENV['DEBUG']) echo $GLOBALS['debugbarRenderer']->render() ?>
-        
     </body>
 </html>
