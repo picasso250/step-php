@@ -10,11 +10,11 @@
 
 于是我们的路由如下
 
-    ->get('/', 'action_index')
-    ->get('/admin', 'action_blog_admin')
-    ->get('/blog/:id', 'action_blog_view')
-    ->match(['GET','POST'], '/blog/:id/edit', 'action_blog_edit')
-    ->match(['GET','POST'], '/admin/blog/new', 'action_blog_new')
+    $router->get('/', 'action_index');
+    $router->get('/admin', 'action_blog_admin');
+    $router->get('/blog/(\d+)', 'action_blog_view');
+    $router->match('GET|POST', '/blog/(\d+)/edit', 'action_blog_edit');
+    $router->match('GET|POST', '/admin/blog/new', 'action_blog_new');
 
 ### 新建博客
 
@@ -57,8 +57,7 @@
         `content` TEXT NOT NULL,
         PRIMARY KEY (`id`)
     )
-    ENGINE=InnoDB
-    ;
+    ENGINE=InnoDB;
 
 ### 保存数据
 
@@ -398,7 +397,7 @@ PHP和MySQL是好朋友。
 
 所以，你需要说明用户访问的某个URL会引起什么函数的执行。在 `public/index.php` 中配置好，然后在 `action.php` 中实现这个函数。
 
-更详细的请看[router 的文档](https://github.com/bephp/router/blob/master/README.zh-CN.md)。
+更详细的请看[router 的文档](https://github.com/bramus/router)。
 
 ### 视图文件夹
 
