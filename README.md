@@ -1,5 +1,7 @@
 # Step-PHP
 
+![travis](https://travis-ci.com/picasso250/step-php.svg?branch=master)
+
 PHP开发框架。中文名：一步之遥。距离原生PHP和Laravel都是一步之遥。
 
 ## 为什么要有这个框架？
