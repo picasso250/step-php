@@ -1,9 +1,11 @@
 {
     "require": {
-        "bephp/router": "^1.1",
         "j4mie/idiorm": "^1.5",
         "vlucas/phpdotenv": "^2.4",
         "filp/whoops": "^2.1",
-        "maximebf/debugbar": "^1.15"
+        "bramus/router": "~1.3"
+    },
+    "require-dev": {
+        "ext-curl": "^0.0.0"
     }
 }

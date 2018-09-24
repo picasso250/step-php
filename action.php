@@ -2,8 +2,6 @@
 
 function action_index()
 {
-    $debugbar = $GLOBALS['debugbar'];
-    $debugbar["messages"]->addMessage("hello world!");
     include ROOT_VIEW.'/welcome.php';
 }
 function action_hello($name)
