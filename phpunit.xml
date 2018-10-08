@@ -19,4 +19,10 @@
         timeoutForMediumTests="10"
         timeoutForLargeTests="60"
         verbose="false">
-        </phpunit>
+        <php>
+                <var name="DB_DSN" value="mysql:dbname=test;host=localhost" />
+                <var name="DB_USER" value="test" />
+                <var name="DB_PASSWD" value="test" />
+                <var name="DB_DBNAME" value="test" />
+        </php>
+</phpunit>

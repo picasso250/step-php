@@ -8,6 +8,7 @@
     "require-dev": {
         "ext-curl": "*",
         "ext-json": "*",
-        "phpunit/phpunit": "^5"
+        "phpunit/phpunit": "^5",
+        "phpunit/dbunit": "1.3"
     }
 }
