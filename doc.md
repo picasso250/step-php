@@ -40,7 +40,8 @@
 
     function action_blog_new()
     {
-        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_new.php']);
+        Res::$layout_tpl = ROOT_VIEW.'/layout.php';
+        Res::renderWithLayout(['content' => ROOT_VIEW.'/blog_new.php']);
     }
 
 现在访问一下 [http://localhost:8080/admin/blog/new](http://localhost:8080/admin/blog/new) 就可以看见新建页面了。
@@ -65,13 +66,14 @@
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $b = ORM::for_table("blog")->create();
-            $b->title = $_POST['title'];
-            $b->content = $_POST['content'];
+            $b->title = Req::post('title');
+            $b->content = Req::post('content');
             $b->save();
             header("Location:/blog/$b->id");
             return;
         }
-        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_new.php']);
+        Res::$layout_tpl = ROOT_VIEW.'/layout.php';
+        Res::renderWithLayout(['content' => ROOT_VIEW.'/blog_new.php']);
     }
 
 这样我们就完成了保存操作的代码。在保存之后，我们重定向到blog的查看页面。因为我们还没写页面，这时应该是报了一个错。
@@ -85,7 +87,8 @@
     function action_blog_view($id)
     {
         $blog = ORM::for_table('blog')->find_one($id);
-        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_view.php'], compact('blog'));
+        Res::$layout_tpl = ROOT_VIEW.'/layout.php';
+        Res::renderWithLayout(['content' => ROOT_VIEW.'/blog_view.php'], compact('blog'));
     }
 
 然后在 view 里新增视图文件 blog_view.php
@@ -109,7 +112,8 @@
     function action_index()
     {
         $blog_list = ORM::for_table('blog')->find_many();
-        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_list.php'], compact('blog_list'));
+        Res::$layout_tpl = ROOT_VIEW.'/layout.php';
+        Res::renderWithLayout(['content' => ROOT_VIEW.'/blog_list.php'], compact('blog_list'));
     }
 
 然后在view 中添加 blog_list.php 文件
@@ -143,9 +147,9 @@
     {
         $errors = [];
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $title = _post('title', '');
+            $title = Req::post('title', '');
             if ($title === '') $errors[] = "标题不能为空";
-            $content = _post('content', '');
+            $content = Req::post('content', '');
             if ($content === '') $errors[] = "内容不能为空";
             if (!$errors) {
                 $b = ORM::for_table("blog")->create();
@@ -156,7 +160,8 @@
                 return;
             }
         }
-        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_new.php'], compact('errors'));
+        Res::$layout_tpl = ROOT_VIEW.'/layout.php';
+        Res::renderWithLayout(['content' => ROOT_VIEW.'/blog_new.php'], compact('errors'));
     }
 
 对应的，blog_new.php 也需要修改
@@ -178,11 +183,11 @@
         <?php endif ?>
         <p>
             标题<br>
-            <input type="text" name="title" value="<?= htmlentities(_post('title', '')) ?>">
+            <input type="text" name="title" value="<?= htmlentities(Req::post('title', '')) ?>">
         </p>
         <p>
             内容<br>
-            <textarea name="content" cols="30" rows="10"><?= htmlentities(_post('content', '')) ?></textarea>
+            <textarea name="content" cols="30" rows="10"><?= htmlentities(Req::post('content', '')) ?></textarea>
         </p>
         <input type="submit" value="保存博客">
     </form>
@@ -196,9 +201,9 @@
         $errors = [];
         $blog = ORM::for_table('blog')->find_one($id);
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $blog->title = _post('title', '');
+            $blog->title = Req::post('title', '');
             if ($blog->title === '') $errors[] = "标题不能为空";
-            $blog->content = _post('content', '');
+            $blog->content = Req::post('content', '');
             if ($blog->content === '') $errors[] = "内容不能为空";
             if (!$errors) {
                 $blog->save();
@@ -206,7 +211,8 @@
                 return;
             }
         }
-        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_edit.php'], compact('errors', 'blog'));
+        Res::$layout_tpl = ROOT_VIEW.'/layout.php';
+        Res::renderWithLayout(['content' => ROOT_VIEW.'/blog_edit.php'], compact('errors', 'blog'));
     }
 
 然后在 view中新增 blog_edit.php
@@ -245,9 +251,9 @@ action.php中的代码可以变为：
 
     function blog_check($blog, &$errors)
     {
-        $blog->title = _post('title', '');
+        $blog->title = Req::post('title', '');
         if ($blog->title === '') $errors[] = "标题不能为空";
-        $blog->content = _post('content', '');
+        $blog->content = Req::post('content', '');
         if ($blog->content === '') $errors[] = "内容不能为空";
     }
 
@@ -263,7 +269,8 @@ action.php中的代码可以变为：
                 return;
             }
         }
-        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_new.php'], compact('errors', 'blog'));
+        Res::$layout_tpl = ROOT_VIEW.'/layout.php';
+        Res::renderWithLayout(['content' => ROOT_VIEW.'/blog_new.php'], compact('errors', 'blog'));
     }
 
     function action_blog_edit($id)
@@ -278,7 +285,8 @@ action.php中的代码可以变为：
                 return;
             }
         }
-        render_with_layout(ROOT_VIEW.'/layout.php', ['content' => ROOT_VIEW.'/blog_edit.php'], compact('errors', 'blog'));
+        Res::$layout_tpl = ROOT_VIEW.'/layout.php';
+        Res::renderWithLayout(['content' => ROOT_VIEW.'/blog_edit.php'], compact('errors', 'blog'));
     }
 
 而view也可以从2个文件变成三个文件。我们将公共部分提取成 blog_form.php
