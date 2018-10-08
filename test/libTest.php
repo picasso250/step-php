@@ -13,6 +13,6 @@ final class libTest extends TestCase
     public function testCanGet()
     {
         $_GET['a'] = 42;
-        $this->assertEquals(42, _get('a'));
+        $this->assertEquals(42, Req::get('a'));
     }
 }
