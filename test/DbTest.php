@@ -50,5 +50,7 @@ ENGINE=InnoDB
         });
         $a = db::fetch("select *from t where id=1");
         $this->assertEquals("joe", $a['user']);
+        $a = db::fetchAll("select *from t ");
+        $this->assertEquals(2, count($a));
     }
 }

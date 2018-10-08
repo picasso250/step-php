@@ -14,9 +14,12 @@ final class libTest extends TestCase
     {
         $_GET['a'] = 42;
         $this->assertEquals(42, Req::get('a'));
+        $_POST['a'] = 42;
+        $this->assertEquals(42, Req::post('a'));
     }
     public function testCanGetService()
     {
+        $this->assertEquals(null, Sv::a());
         Sv::a(42);
         $this->assertEquals(42, Sv::a());
     }
