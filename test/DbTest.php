@@ -46,7 +46,7 @@ ENGINE=InnoDB
         $ds = new PHPUnit_Extensions_Database_DataSet_QueryDataSet($this->getConnection());
         $ds->addTable('t');
         sv::db(function() {
-                return new PDO( $GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+            return new PDO( $GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
         });
         $a = db::fetch("select *from t where id=1");
         $this->assertEquals("joe", $a['user']);
