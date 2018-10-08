@@ -4,19 +4,25 @@
  * User: xiao
  * Date: 2018/9/21
  * Time: 下午5:37
+ *
+ * @category File
+ * @package  GLOBAL
+ * @author   xiaochi <wxiaochi@qq.com>
+ * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link     https://coding.net/u/picasso250/p/10x-programer/git
  */
 
 define('ROOT_URL', 'http://localhost:8000');
 
 // 首页
-list($ch, $ret) = http_get_must("/");
+list($ch, $ret) = Http_Get_must("/");
 $info = curl_getinfo($ch);
 if ($info['http_code'] != 200) {
     throw new Exception("http code should be 200, $info[http_code] found", $info['code']);
 }
 
 // 参数
-list($ch, $ret) = http_get_must("/hello/xc");
+list($ch, $ret) = Http_Get_must("/hello/xc");
 $info = curl_getinfo($ch);
 if ($info['http_code'] != 200) {
     throw new Exception("http code should be 200, $info[http_code] found", $info['code']);
@@ -26,7 +32,7 @@ if (!preg_match('/xc$/', $ret)) {
 }
 
 // 错误页面
-list($ch, $ret) = http_get_must("/error/example");
+list($ch, $ret) = Http_Get_must("/error/example");
 $info = curl_getinfo($ch);
 if ($info['http_code'] != 500) {
     throw new Exception("http code should be 500, $info[http_code] found", $info['code']);
@@ -35,7 +41,14 @@ if ($info['http_code'] != 500) {
 // ==== ALL OK =====
 echo "OK.\n";
 
-function http_get_must($url)
+/**
+ * Do a GET and return json
+ *
+ * @param string $url url
+ *
+ * @return array
+ */
+function Http_Get_must($url)
 {
     echo "GET\t",ROOT_URL.$url,"\n";
     $ch = curl_init(ROOT_URL.$url);
@@ -48,8 +61,17 @@ function http_get_must($url)
     }
     return [$ch, $ret];
 }
-function http_get($url) {
-    list($ch, $ret) = http_get_must($url);
+
+/**
+ * Do a GET and ensure no curl error
+ *
+ * @param string $url url
+ *
+ * @return string
+ */
+function Http_get($url)
+{
+    list($ch, $ret) = Http_Get_must($url);
     $info = curl_getinfo($ch);
     if ($info['http_code'] != 200) {
         throw new \Exception("http code not 200", $info['http_code']);
@@ -57,7 +79,15 @@ function http_get($url) {
     return substr($ret, $info['header_size']);
 }
 
-function http_post_must($url, $data)
+/**
+ * Do a post and ensure no curl error
+ *
+ * @param string $url  url
+ * @param string $data data
+ *
+ * @return array
+ */
+function Http_Post_must($url, $data)
 {
     $ch = curl_init(ROOT_URL.$url);
     echo "POST\t",ROOT_URL.$url,"\n";
@@ -73,8 +103,18 @@ function http_post_must($url, $data)
     }
     return [$ch, $ret];
 }
-function http_post($url, $data) {
-    list($ch, $ret) = http_post_must($url, $data);
+
+/**
+ * Do a post and return json
+ *
+ * @param string $url  url
+ * @param string $data data
+ *
+ * @return mixed
+ */
+function Http_post($url, $data)
+{
+    list($ch, $ret) = Http_Post_must($url, $data);
     $info = curl_getinfo($ch);
     if ($info['http_code'] != 200) {
         throw new \Exception("http code not 200", $info['http_code']);
