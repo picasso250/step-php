@@ -77,6 +77,10 @@ Step-PHP也引入了其他一些确实可以提高开发效率的组件（[phpdo
         }
     }
 
+## 参与开发
+
+    vendor\bin\phpunit test --coverage-html cv --whitelist lib.php
+
 ## 写在最后的话
 
 如果你在使用中遇到了什么问题，请联系我。
