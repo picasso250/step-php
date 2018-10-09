@@ -1,6 +1,6 @@
 # Step-PHP
 
-![travis](https://travis-ci.com/picasso250/step-php.svg?branch=master)
+[![travis](https://travis-ci.com/picasso250/step-php.svg?branch=master)](https://travis-ci.com/picasso250/step-php)
 
 PHP开发框架。中文名：一步之遥。距离原生PHP和Laravel都是一步之遥。
 
