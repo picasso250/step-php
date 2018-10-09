@@ -224,7 +224,8 @@ class Model implements ArrayAccess
      *
      * @return bool
      */
-    public function offsetExists ( $offset ) {
+    public function offsetExists( $offset )
+    {
         return isset($this->data_[$offset]);
     }
     /**
@@ -234,40 +235,46 @@ class Model implements ArrayAccess
      *
      * @return mixed
      */
-    public function offsetGet ( $offset ) {
+    public function offsetGet( $offset )
+    {
         return $this->data_[$offset];
     }
     /**
      * Array offsetSet
      *
      * @param string $offset name
+     * @param string $value  value
      *
      * @return null
      */
-    public function offsetSet ( $offset , $value ) {
+    public function offsetSet( $offset , $value )
+    {
         $this->data_[$offset] = $value;
         $this->dirty_[$offset] = 1;
     }
+
     /**
      * Array offsetSet
      * 
-     * @SuppressWarnings("unused")
-     *
      * @param string $offset name
+     * 
+     * @SuppressWarnings("unused")
      * 
      * @return null
      */
-    public function offsetUnset ( $offset ) {
+    public function offsetUnset( $offset )
+    {
     }
 
     /**
      * From array
      *
-     * @param array $data     name
+     * @param array $data name
      *
      * @return null
      */
-    public function __construct ($data =[]) {
+    public function __construct($data =[])
+    {
         $this->data_ = $data;
     }
 
@@ -276,7 +283,8 @@ class Model implements ArrayAccess
      *
      * @return string
      */
-    static function table() {
+    static function table()
+    {
         return strtolower(get_called_class());
     }
 
@@ -285,7 +293,8 @@ class Model implements ArrayAccess
      *
      * @return string
      */
-    static function pkey() {
+    static function pkey()
+    {
         return 'id';
     }
 
@@ -293,9 +302,11 @@ class Model implements ArrayAccess
      * Primary Key
      *
      * @param string $id id
+     * 
      * @return static
      */
-    static function find($id) {
+    static function find($id)
+    {
         $t = static::table();
         $pkey = static::pkey();
         $sql = "SELECT * from `$t` where `$pkey`=? limit 1";
@@ -308,7 +319,8 @@ class Model implements ArrayAccess
      *
      * @return static
      */
-    function save() {
+    function save()
+    {
         $t = static::table();
         $pkey = static::pkey();
         if (!isset($this[$pkey])) {
