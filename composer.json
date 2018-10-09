@@ -11,6 +11,6 @@
         "phpunit/phpunit": "^5",
         "phpunit/dbunit": "1.3",
         "phpunit/php-code-coverage": "4.0.4",
-        "phpmd/phpmd": "@stable"
+        "phpmd/phpmd": "2.2.3"
     }
 }
