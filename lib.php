@@ -203,31 +203,98 @@ class Req
     }
 }
 
-class Model implements ArrayAccess {
-    protected $_data = [];
-    protected $_dirty = [];
-    public function offsetExists ( $offset ) {
-        return isset($this->_data[$offset]);
-    }
-    public function offsetGet ( $offset ) {
-        return $this->_data[$offset];
-    }
-    public function offsetSet ( $offset , $value ) {
-        $this->_data[$offset] = $value;
-        $this->_dirty[$offset] = 1;
-    }
-    public function offsetUnset ( $offset ) {
+/**
+ * Model can save
+ *
+ * @category Class
+ * @package  GLOBAL
+ * @author   xiaochi <wxiaochi@qq.com>
+ * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
+ * @link     https://coding.net/u/picasso250/p/10x-programer/git
+ */
+class Model implements ArrayAccess
+{
+    protected $data_ = [];
+    protected $dirty_ = [];
 
+    /**
+     * Array offsetExists
+     *
+     * @param string $offset name
+     *
+     * @return bool
+     */
+    public function offsetExists ( $offset ) {
+        return isset($this->data_[$offset]);
     }
+    /**
+     * Array offsetGet
+     *
+     * @param string $offset name
+     *
+     * @return mixed
+     */
+    public function offsetGet ( $offset ) {
+        return $this->data_[$offset];
+    }
+    /**
+     * Array offsetSet
+     *
+     * @param string $offset name
+     *
+     * @return null
+     */
+    public function offsetSet ( $offset , $value ) {
+        $this->data_[$offset] = $value;
+        $this->dirty_[$offset] = 1;
+    }
+    /**
+     * Array offsetSet
+     * 
+     * @SuppressWarnings("unused")
+     *
+     * @param string $offset name
+     * 
+     * @return null
+     */
+    public function offsetUnset ( $offset ) {
+    }
+
+    /**
+     * From array
+     *
+     * @param array $data     name
+     *
+     * @return null
+     */
     public function __construct ($data =[]) {
-        $this->_data = $data;
+        $this->data_ = $data;
     }
+
+    /**
+     * Table name
+     *
+     * @return string
+     */
     static function table() {
         return strtolower(get_called_class());
     }
+
+    /**
+     * Primary Key
+     *
+     * @return string
+     */
     static function pkey() {
         return 'id';
     }
+
+    /**
+     * Primary Key
+     *
+     * @param string $id id
+     * @return static
+     */
     static function find($id) {
         $t = static::table();
         $pkey = static::pkey();
@@ -235,12 +302,18 @@ class Model implements ArrayAccess {
         $a = db::fetch($sql, [$id]);
         return $a ? new static($a) : null;
     }
+
+    /**
+     * Save(update or insert)
+     *
+     * @return static
+     */
     function save() {
         $t = static::table();
         $pkey = static::pkey();
         if (!isset($this[$pkey])) {
             $a = $b = $v = [];
-            foreach ($this->_dirty as $key => $_) {
+            foreach ($this->dirty_ as $key => $_) {
                 $a[] = "`$key`";
                 $b[] = "?";
                 $v[] = $this[$key];
@@ -252,7 +325,7 @@ class Model implements ArrayAccess {
             $this[$pkey] = $db->lastInsertId();
         } else {
             $a = $b = $v = [];
-            foreach ($this->_dirty as $key => $_) {
+            foreach ($this->dirty_ as $key => $_) {
                 $a[] = "`$key`=?";
                 $v[] = $this[$key];
             }
@@ -260,7 +333,7 @@ class Model implements ArrayAccess {
             $v[] = $this['id'];
             db::execute("UPDATE `$t` set $a_ where `$pkey`=?", $v);
         }
-        $this->_dirty = [];
+        $this->dirty_ = [];
     }
 
 }
