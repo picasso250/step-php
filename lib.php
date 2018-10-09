@@ -219,7 +219,7 @@ class Model implements ArrayAccess {
     public function offsetUnset ( $offset ) {
 
     }
-    public function __construct ($data ) {
+    public function __construct ($data =[]) {
         $this->_data = $data;
     }
     static function table() {

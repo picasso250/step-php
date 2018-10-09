@@ -69,6 +69,13 @@ ENGINE=InnoDB
         $t->save();
         $t = t::find(2);
         $this->assertEquals('xc', $t['user']);
+
+        $t=new t();
+        $t['user']='xx';
+        unset($t['user']);
+        $t->save();
+        $this->assertEquals(3, $t['id']);
+
     }
 }
 
