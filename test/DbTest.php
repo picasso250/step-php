@@ -18,11 +18,13 @@ class DbTest extends PHPUnit_Extensions_Database_TestCase
             if (self::$pdo == null) {
                 self::$pdo = new PDO( $GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
             }
-            self::$pdo->exec("CREATE TABLE IF NOT EXISTS `t` (
-	`id` INT(11) NULL DEFAULT NULL,
+            self::$pdo->exec("
+CREATE TABLE IF NOT EXISTS `t` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`content` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
 	`user` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_unicode_ci',
-	`created` DATETIME NULL DEFAULT NULL
+	`created` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY (`id`)
 )
 COLLATE='utf8_unicode_ci'
 ENGINE=InnoDB
@@ -53,4 +55,23 @@ ENGINE=InnoDB
         $a = db::fetchAll("select *from t ");
         $this->assertEquals(2, count($a));
     }
+
+    public function testCanSave()
+    {
+        $ds = new PHPUnit_Extensions_Database_DataSet_QueryDataSet($this->getConnection());
+        $ds->addTable('t');
+        sv::db(function() {
+            return new PDO( $GLOBALS['DB_DSN'], $GLOBALS['DB_USER'], $GLOBALS['DB_PASSWD'] );
+        });
+        $t = t::find(2);
+        $this->assertEquals(2, $t['id']);
+        $t['user'] = 'xc';
+        $t->save();
+        $t = t::find(2);
+        $this->assertEquals('xc', $t['user']);
+    }
+}
+
+class t extends Model{
+
 }

@@ -202,3 +202,65 @@ class Req
         return isset($_POST[$key]) ? trim($_POST[$key]) : $default;
     }
 }
+
+class Model implements ArrayAccess {
+    protected $_data = [];
+    protected $_dirty = [];
+    public function offsetExists ( $offset ) {
+        return isset($this->_data[$offset]);
+    }
+    public function offsetGet ( $offset ) {
+        return $this->_data[$offset];
+    }
+    public function offsetSet ( $offset , $value ) {
+        $this->_data[$offset] = $value;
+        $this->_dirty[$offset] = 1;
+    }
+    public function offsetUnset ( $offset ) {
+
+    }
+    public function __construct ($data ) {
+        $this->_data = $data;
+    }
+    static function table() {
+        return strtolower(get_called_class());
+    }
+    static function pkey() {
+        return 'id';
+    }
+    static function find($id) {
+        $t = static::table();
+        $pkey = static::pkey();
+        $sql = "SELECT * from `$t` where `$pkey`=? limit 1";
+        $a = db::fetch($sql, [$id]);
+        return $a ? new static($a) : null;
+    }
+    function save() {
+        $t = static::table();
+        $pkey = static::pkey();
+        if (!isset($this[$pkey])) {
+            $a = $b = $v = [];
+            foreach ($this->_dirty as $key => $_) {
+                $a[] = "`$key`";
+                $b[] = "?";
+                $v[] = $this[$key];
+            }
+            $a_ = implode(',', $a);
+            $b_ = implode(',', $b);
+            db::execute("INSERT into `$t` ($a_) values($b_)", $v);
+            $db = sv::db();
+            $this[$pkey] = $db->lastInsertId();
+        } else {
+            $a = $b = $v = [];
+            foreach ($this->_dirty as $key => $_) {
+                $a[] = "`$key`=?";
+                $v[] = $this[$key];
+            }
+            $a_ = implode(',', $a);
+            $v[] = $this['id'];
+            db::execute("UPDATE `$t` set $a_ where `$pkey`=?", $v);
+        }
+        $this->_dirty = [];
+    }
+
+}
